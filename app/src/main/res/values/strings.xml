@@ -3,7 +3,6 @@
     <string name="title_all_dishes">All Dishes</string>
     <string name="title_favorite_dishes">Favorite</string>
     <string name="title_random_dish">Random Dish</string>
-    <!--END-->
 
     <string name="splash_screen_title">Fav Dish</string>
 
@@ -35,4 +34,8 @@
     <string name="err_msg_enter_dish_cooking_instructions">Enter dish cooking instructions.</string>
 
     <string name="label_no_dishes_added_yet">No dishes added yet!!!</string>
+
+    <string name="title_dish_details">Dish Details</string>
+
+    <string name="lbl_estimate_cooking_time">The approx time required to cook the dish is %1$s minutes.</string>
 </resources>

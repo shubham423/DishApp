@@ -6,11 +6,14 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.shubham.dishapp.R
 import com.shubham.dishapp.application.FavDishApplication
 import com.shubham.dishapp.databinding.FragmentAllDishesBinding
+import com.shubham.dishapp.model.entities.FavDish
 import com.shubham.dishapp.view.activities.AddUpdateDishActivity
+import com.shubham.dishapp.view.activities.MainActivity
 import com.shubham.dishapp.view.adapters.FavDishAdapter
 import com.shubham.dishapp.viewmodel.FavDishViewModel
 import com.shubham.dishapp.viewmodel.FavDishViewModelFactory
@@ -41,10 +44,10 @@ class AllDishesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         mBinding.rvDishesList.layoutManager = GridLayoutManager(requireActivity(), 2)
         val favDishAdapter = FavDishAdapter(this@AllDishesFragment)
         mBinding.rvDishesList.adapter = favDishAdapter
-
         mFavDishViewModel.allDishesList.observe(viewLifecycleOwner) { dishes ->
             dishes.let {
 
@@ -61,6 +64,23 @@ class AllDishesFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (requireActivity() is MainActivity) {
+            (activity as MainActivity?)!!.showBottomNavigationView()
+        }
+    }
+
+    fun dishDetails(favDish: FavDish) {
+        if (requireActivity() is MainActivity) {
+            (activity as MainActivity?)!!.hideBottomNavigationView()
+        }
+
+        findNavController()
+            .navigate(AllDishesFragmentDirections.actionAllDishesToDishDetails(favDish))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
