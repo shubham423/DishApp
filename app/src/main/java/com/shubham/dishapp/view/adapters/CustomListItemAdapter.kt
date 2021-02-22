@@ -3,13 +3,16 @@ package com.shubham.dishapp.view.adapters
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.shubham.dishapp.databinding.ItemCustomListLayoutBinding
 import com.shubham.dishapp.view.activities.AddUpdateDishActivity
+import com.shubham.dishapp.view.fragments.AllDishesFragment
 
 
 class CustomListItemAdapter(
         private val activity: Activity,
+        private val fragment: Fragment?,
         private val listItems: List<String>,
         private val selection: String
 ) :
@@ -21,7 +24,6 @@ class CustomListItemAdapter(
         return ViewHolder(binding)
     }
 
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val item = listItems[position]
@@ -32,6 +34,10 @@ class CustomListItemAdapter(
 
             if (activity is AddUpdateDishActivity) {
                 activity.selectedListItem(item, selection)
+            }
+
+            if (fragment is AllDishesFragment) {
+                fragment.filterSelection(item)
             }
         }
     }
