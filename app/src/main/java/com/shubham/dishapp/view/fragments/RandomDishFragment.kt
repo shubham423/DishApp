@@ -1,5 +1,6 @@
 package com.shubham.dishapp.view.fragments
 
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -28,6 +29,7 @@ import com.shubham.dishapp.viewmodel.RandomDishViewModel
 class RandomDishFragment : Fragment() {
 
     private var mBinding: FragmentRandomDishBinding? = null
+    private var mProgressDialog: Dialog? = null
 
     private lateinit var mRandomDishViewModel: RandomDishViewModel
 
@@ -49,6 +51,10 @@ class RandomDishFragment : Fragment() {
         mRandomDishViewModel.getRandomDishFromAPI()
 
         randomDishViewModelObserver()
+
+        mBinding!!.srlRandomDish.setOnRefreshListener {
+            mRandomDishViewModel.getRandomDishFromAPI()
+        }
     }
 
     private fun randomDishViewModelObserver() {
@@ -58,6 +64,10 @@ class RandomDishFragment : Fragment() {
                 Observer { randomDishResponse ->
                     randomDishResponse?.let {
                         Log.i("Random Dish Response", "${randomDishResponse.recipes[0]}")
+
+                        if (mBinding!!.srlRandomDish.isRefreshing) {
+                            mBinding!!.srlRandomDish.isRefreshing = false
+                        }
                         setRandomDishResponseInUI(randomDishResponse.recipes[0])
                     }
                 })
@@ -67,12 +77,21 @@ class RandomDishFragment : Fragment() {
                 Observer { dataError ->
                     dataError?.let {
                         Log.i("Random Dish API Error", "$dataError")
+
+                        if (mBinding!!.srlRandomDish.isRefreshing) {
+                            mBinding!!.srlRandomDish.isRefreshing = false
+                        }
                     }
                 })
 
         mRandomDishViewModel.loadRandomDish.observe(viewLifecycleOwner, Observer { loadRandomDish ->
             loadRandomDish?.let {
                 Log.i("Random Dish Loading", "$loadRandomDish")
+                if (loadRandomDish && !mBinding!!.srlRandomDish.isRefreshing) {
+                    showCustomProgressDialog()
+                } else {
+                    hideProgressDialog()
+                }
             }
         })
     }
@@ -122,39 +141,74 @@ class RandomDishFragment : Fragment() {
                         recipe.readyInMinutes.toString()
                 )
 
+        mBinding!!.ivFavoriteDish.setImageDrawable(
+                ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.ic_favorite_unselected
+                )
+        )
+
+        var addedToFavorite = false
+
 
         mBinding!!.ivFavoriteDish.setOnClickListener {
+            if (addedToFavorite) {
+                Toast.makeText(
+                        requireActivity(),
+                        resources.getString(R.string.msg_already_added_to_favorites),
+                        Toast.LENGTH_SHORT
+                ).show()
+            } else {
 
-            val randomDishDetails = FavDish(
-                    recipe.image,
-                    Constants.DISH_IMAGE_SOURCE_ONLINE,
-                    recipe.title,
-                    dishType,
-                    "Other",
-                    ingredients,
-                    recipe.readyInMinutes.toString(),
-                    recipe.instructions,
-                    true
-            )
+                val randomDishDetails = FavDish(
+                        recipe.image,
+                        Constants.DISH_IMAGE_SOURCE_ONLINE,
+                        recipe.title,
+                        dishType,
+                        "Other",
+                        ingredients,
+                        recipe.readyInMinutes.toString(),
+                        recipe.instructions,
+                        true
+                )
 
-            val mFavDishViewModel: FavDishViewModel by viewModels {
-                FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
+                val mFavDishViewModel: FavDishViewModel by viewModels {
+                    FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
+                }
+
+                mFavDishViewModel.insert(randomDishDetails)
+
+                addedToFavorite = true
+
+                mBinding!!.ivFavoriteDish.setImageDrawable(
+                        ContextCompat.getDrawable(
+                                requireActivity(),
+                                R.drawable.ic_favorite_selected
+                        )
+                )
+
+                Toast.makeText(
+                        requireActivity(),
+                        resources.getString(R.string.msg_added_to_favorites),
+                        Toast.LENGTH_SHORT
+                ).show()
             }
+        }
+    }
 
-            mFavDishViewModel.insert(randomDishDetails)
+    private fun showCustomProgressDialog() {
+        mProgressDialog = Dialog(requireActivity())
 
-            mBinding!!.ivFavoriteDish.setImageDrawable(
-                    ContextCompat.getDrawable(
-                            requireActivity(),
-                            R.drawable.ic_favorite_selected
-                    )
-            )
+        mProgressDialog?.let {
 
-            Toast.makeText(
-                    requireActivity(),
-                    resources.getString(R.string.msg_added_to_favorites),
-                    Toast.LENGTH_SHORT
-            ).show()
+            it.setContentView(R.layout.dialog_custom_progress)
+            it.show()
+        }
+    }
+
+    private fun hideProgressDialog() {
+        mProgressDialog?.let {
+            it.dismiss()
         }
     }
 
