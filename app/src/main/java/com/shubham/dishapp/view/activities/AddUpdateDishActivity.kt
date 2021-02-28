@@ -59,18 +59,12 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mBinding: ActivityAddUpdateDishBinding
 
-    // A global variable for stored image path.
     private var mImagePath: String = ""
 
-    // A global variable for the custom list dialog.
     private lateinit var mCustomListDialog: Dialog
 
     private var mFavDishDetails: FavDish? = null
 
-    /**
-     * To create the ViewModel we used the viewModels delegate, passing in an instance of our FavDishViewModelFactory.
-     * This is constructed based on the repository retrieved from the FavDishApplication.
-     */
     private val mFavDishViewModel: FavDishViewModel by viewModels {
         FavDishViewModelFactory((application as FavDishApplication).repository)
     }
@@ -91,7 +85,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             if (it.id != 0) {
                 mImagePath = it.image
 
-                // Load the dish image in the ImageView.
                 Glide.with(this@AddUpdateDishActivity)
                         .load(mImagePath)
                         .centerCrop()
@@ -156,9 +149,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.btn_add_dish -> {
-
-                // Define the local variables and get the EditText values.
-                // For Dish Image we have the global variable defined already.
 
                 val title = mBinding.etTitle.text.toString().trim { it <= ' ' }
                 val type = mBinding.etType.text.toString().trim { it <= ' ' }
@@ -257,7 +247,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                                     Toast.LENGTH_SHORT
                             ).show()
 
-                            // You even print the log if Toast is not displayed on emulator
                             Log.e("Insertion", "Success")
                         } else {
                             mFavDishViewModel.update(favDishDetails)
@@ -267,12 +256,8 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                                     "You successfully updated your favorite dish details.",
                                     Toast.LENGTH_SHORT
                             ).show()
-
-                            // You even print the log if Toast is not displayed on emulator
                             Log.e("Updating", "Success")
                         }
-
-                        // Finish the Activity
                         finish()
                     }
                 }
@@ -280,20 +265,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     * Receive the result from a previous call to
-     * {@link #startActivityForResult(Intent, int)}.  This follows the
-     * related Activity API as described there in
-     * {@link Activity#onActivityResult(int, int, Intent)}.
-     *
-     * @param requestCode The integer request code originally supplied to
-     *                    startActivityForResult(), allowing you to identify who this
-     *                    result came from.
-     * @param resultCode The integer result code returned by the child activity
-     *                   through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     *               (various data can be attached to Intent "extras").
-     */
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -301,9 +272,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
                 data?.extras?.let {
                     val thumbnail: Bitmap =
-                            data.extras!!.get("data") as Bitmap // Bitmap from camera
-
-                    // Set Capture Image bitmap to the imageView using Glide
+                            data.extras!!.get("data") as Bitmap
                     Glide.with(this@AddUpdateDishActivity)
                             .load(thumbnail)
                             .centerCrop()
@@ -312,7 +281,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     mImagePath = saveImageToInternalStorage(thumbnail)
                     Log.i("ImagePath", mImagePath)
 
-                    // Replace the add icon with edit icon once the image is loaded.
                     mBinding.ivAddDishImage.setImageDrawable(
                             ContextCompat.getDrawable(
                                     this@AddUpdateDishActivity,
@@ -323,10 +291,8 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             } else if (requestCode == GALLERY) {
 
                 data?.let {
-                    // Here we will get the select image URI.
                     val selectedPhotoUri = data.data
 
-                    // Set Selected Image URI to the imageView using Glide
                     Glide.with(this@AddUpdateDishActivity)
                             .load(selectedPhotoUri)
                             .centerCrop()
@@ -338,9 +304,8 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                                         target: Target<Drawable>?,
                                         isFirstResource: Boolean
                                 ): Boolean {
-                                    // log exception
                                     Log.e("TAG", "Error loading image", e)
-                                    return false // important to return false so the error placeholder can be placed
+                                    return false
                                 }
 
                                 override fun onResourceReady(
@@ -359,8 +324,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                                 }
                             })
                             .into(mBinding.ivDishImage)
-
-                    // Replace the add icon with edit icon once the image is selected.
                     mBinding.ivAddDishImage.setImageDrawable(
                             ContextCompat.getDrawable(
                                     this@AddUpdateDishActivity,
@@ -374,9 +337,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     * A function for ActionBar setup.
-     */
     private fun setupActionBar() {
         setSupportActionBar(mBinding.toolbarAddDishActivity)
         if (mFavDishDetails != null && mFavDishDetails!!.id != 0) {
@@ -396,17 +356,12 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    /**
-     * A function to launch the custom image selection dialog.
-     */
     private fun customImageSelectionDialog() {
         val dialog = Dialog(this@AddUpdateDishActivity)
 
         val binding: DialogCustomImageSelectionBinding =
                 DialogCustomImageSelectionBinding.inflate(layoutInflater)
 
-        /*Set the screen content from a layout resource.
-        The resource will be inflated, adding all top-level views to the screen.*/
         dialog.setContentView(binding.root)
 
         binding.tvCamera.setOnClickListener {
@@ -420,7 +375,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                         override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
 
                             report?.let {
-                                // Here after all the permission are granted launch the CAMERA to capture an image.
                                 if (report.areAllPermissionsGranted()) {
 
                                     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -451,7 +405,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
                         override fun onPermissionGranted(response: PermissionGrantedResponse?) {
 
-                            // Here after all the permission are granted launch the gallery to select and image.
                             val galleryIntent = Intent(
                                     Intent.ACTION_PICK,
                                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -479,14 +432,9 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
             dialog.dismiss()
         }
-
-        //Start the dialog and display it on screen.
         dialog.show()
     }
 
-    /**
-     * A function used to show the alert dialog when the permissions are denied and need to allow it from settings app info.
-     */
     private fun showRationalDialogForPermissions() {
         AlertDialog.Builder(this)
                 .setMessage("It Looks like you have turned off permissions required for this feature. It can be enabled under Application Settings")
@@ -507,83 +455,43 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                 }.show()
     }
 
-    /**
-     * A function to save a copy of an image to internal storage for FavDishApp to use.
-     *
-     * @param bitmap
-     */
     private fun saveImageToInternalStorage(bitmap: Bitmap): String {
 
-        // Get the context wrapper instance
         val wrapper = ContextWrapper(applicationContext)
 
-        // Initializing a new file
-        // The bellow line return a directory in internal storage
-        /**
-         * The Mode Private here is
-         * File creation mode: the default mode, where the created file can only
-         * be accessed by the calling application (or all applications sharing the
-         * same user ID).
-         */
         var file = wrapper.getDir(IMAGE_DIRECTORY, Context.MODE_PRIVATE)
 
-        // Mention a file name to save the image
         file = File(file, "${UUID.randomUUID()}.jpg")
 
         try {
-            // Get the file output stream
             val stream: OutputStream = FileOutputStream(file)
 
-            // Compress bitmap
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
 
-            // Flush the stream
             stream.flush()
-
-            // Close stream
             stream.close()
-        } catch (e: IOException) { // Catch the exception
+        } catch (e: IOException) {
             e.printStackTrace()
         }
 
-        // Return the saved image absolute path
         return file.absolutePath
     }
 
-    /**
-     * A function to launch the custom list dialog.
-     *
-     * @param title - Define the title at runtime according to the list items.
-     * @param itemsList - List of items to be selected.
-     * @param selection - By passing this param you can identify the list item selection.
-     */
     private fun customItemsListDialog(title: String, itemsList: List<String>, selection: String) {
         mCustomListDialog = Dialog(this@AddUpdateDishActivity)
 
         val binding: DialogCustomListBinding = DialogCustomListBinding.inflate(layoutInflater)
 
-        /*Set the screen content from a layout resource.
-        The resource will be inflated, adding all top-level views to the screen.*/
         mCustomListDialog.setContentView(binding.root)
 
         binding.tvTitle.text = title
 
-        // Set the LayoutManager that this RecyclerView will use.
         binding.rvList.layoutManager = LinearLayoutManager(this@AddUpdateDishActivity)
-        // Adapter class is initialized and list is passed in the param.
         val adapter = CustomListItemAdapter(this@AddUpdateDishActivity, null, itemsList, selection)
-        // adapter instance is set to the recyclerview to inflate the items.
         binding.rvList.adapter = adapter
-        //Start the dialog and display it on screen.
         mCustomListDialog.show()
     }
 
-    /**
-     * A function to set the selected item to the view.
-     *
-     * @param item - Selected Item.
-     * @param selection - Identify the selection and set it to the view accordingly.
-     */
     fun selectedListItem(item: String, selection: String) {
 
         when (selection) {
