@@ -11,7 +11,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.shubham.dishapp.R
 import com.shubham.dishapp.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityMainBinding

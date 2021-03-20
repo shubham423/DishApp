@@ -20,20 +20,20 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.shubham.dishapp.R
-import com.shubham.dishapp.application.FavDishApplication
 import com.shubham.dishapp.databinding.FragmentDishDetailsBinding
 import com.shubham.dishapp.viewmodel.FavDishViewModel
-import com.shubham.dishapp.viewmodel.FavDishViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import java.util.*
 
+
+@AndroidEntryPoint
 class DishDetailsFragment : Fragment() {
 
     private var mBinding: FragmentDishDetailsBinding? = null
 
-    private val mFavDishViewModel: FavDishViewModel by viewModels {
-        FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
-    }
+    private val mFavDishViewModel: FavDishViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

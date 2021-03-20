@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.shubham.dishapp.R
-import com.shubham.dishapp.application.FavDishApplication
 import com.shubham.dishapp.databinding.DialogCustomListBinding
 import com.shubham.dishapp.databinding.FragmentAllDishesBinding
 import com.shubham.dishapp.model.entities.FavDish
@@ -23,14 +22,14 @@ import com.shubham.dishapp.view.activities.MainActivity
 import com.shubham.dishapp.view.adapters.CustomListItemAdapter
 import com.shubham.dishapp.view.adapters.FavDishAdapter
 import com.shubham.dishapp.viewmodel.FavDishViewModel
-import com.shubham.dishapp.viewmodel.FavDishViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class AllDishesFragment : Fragment() {
 
     private lateinit var mBinding: FragmentAllDishesBinding
 
-    private val mFavDishViewModel: FavDishViewModel by viewModels {
-        FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
-    }
+    private val mFavDishViewModel: FavDishViewModel by viewModels()
 
     private lateinit var mFavDishAdapter: FavDishAdapter
     private lateinit var mCustomListDialog: Dialog
@@ -115,7 +114,7 @@ class AllDishesFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun deleteStudent(dish: FavDish) {
+    fun deleteDish(dish: FavDish) {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle(resources.getString(R.string.title_delete_dish))
         builder.setMessage(resources.getString(R.string.msg_delete_dish_dialog, dish.title))

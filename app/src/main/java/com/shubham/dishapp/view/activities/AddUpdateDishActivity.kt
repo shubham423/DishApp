@@ -39,7 +39,6 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import com.shubham.dishapp.R
-import com.shubham.dishapp.application.FavDishApplication
 import com.shubham.dishapp.databinding.ActivityAddUpdateDishBinding
 import com.shubham.dishapp.databinding.DialogCustomImageSelectionBinding
 import com.shubham.dishapp.databinding.DialogCustomListBinding
@@ -47,14 +46,14 @@ import com.shubham.dishapp.model.entities.FavDish
 import com.shubham.dishapp.utils.Constants
 import com.shubham.dishapp.view.adapters.CustomListItemAdapter
 import com.shubham.dishapp.viewmodel.FavDishViewModel
-import com.shubham.dishapp.viewmodel.FavDishViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
 
-
+@AndroidEntryPoint
 class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mBinding: ActivityAddUpdateDishBinding
@@ -65,9 +64,9 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private var mFavDishDetails: FavDish? = null
 
-    private val mFavDishViewModel: FavDishViewModel by viewModels {
-        FavDishViewModelFactory((application as FavDishApplication).repository)
-    }
+    private val mFavDishViewModel: FavDishViewModel by viewModels()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

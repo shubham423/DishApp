@@ -1,11 +1,14 @@
 package com.shubham.dishapp.viewmodel
 
+import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.shubham.dishapp.model.database.FavDishRepository
 import com.shubham.dishapp.model.entities.FavDish
 import kotlinx.coroutines.launch
 
-class FavDishViewModel(private val repository: FavDishRepository) : ViewModel() {
+
+class FavDishViewModel @ViewModelInject constructor(private val repository: FavDishRepository, application:Application) : AndroidViewModel(application) {
 
     fun insert(dish: FavDish) = viewModelScope.launch {
         repository.insertFavDishData(dish)
@@ -26,12 +29,3 @@ class FavDishViewModel(private val repository: FavDishRepository) : ViewModel() 
     fun getFilteredList(value: String): LiveData<List<FavDish>> = repository.filteredListDishes(value).asLiveData()
 }
 
-class FavDishViewModelFactory(private val repository: FavDishRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FavDishViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return FavDishViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}

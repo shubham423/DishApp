@@ -1,6 +1,7 @@
 package com.shubham.dishapp.utils
 
 object Constants {
+    const val DATABASE_NAME: String = "DishDb"
 
     const val DISH_TYPE: String = "DishType"
     const val DISH_CATEGORY: String = "DishCategory"

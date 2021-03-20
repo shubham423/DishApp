@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -17,15 +16,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.shubham.dishapp.R
-import com.shubham.dishapp.application.FavDishApplication
 import com.shubham.dishapp.databinding.FragmentRandomDishBinding
 import com.shubham.dishapp.model.entities.FavDish
 import com.shubham.dishapp.model.entities.RandomDish
 import com.shubham.dishapp.utils.Constants
 import com.shubham.dishapp.viewmodel.FavDishViewModel
-import com.shubham.dishapp.viewmodel.FavDishViewModelFactory
 import com.shubham.dishapp.viewmodel.RandomDishViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class RandomDishFragment : Fragment() {
 
     private var mBinding: FragmentRandomDishBinding? = null
@@ -172,9 +172,8 @@ class RandomDishFragment : Fragment() {
                         true
                 )
 
-                val mFavDishViewModel: FavDishViewModel by viewModels {
-                    FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
-                }
+                val mFavDishViewModel: FavDishViewModel by viewModels()
+
 
                 mFavDishViewModel.insert(randomDishDetails)
 

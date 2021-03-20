@@ -4,29 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.shubham.dishapp.R
-import com.shubham.dishapp.application.FavDishApplication
 import com.shubham.dishapp.databinding.FragmentFavoriteDishesBinding
 import com.shubham.dishapp.model.entities.FavDish
 import com.shubham.dishapp.view.activities.MainActivity
 import com.shubham.dishapp.view.adapters.FavDishAdapter
 import com.shubham.dishapp.viewmodel.FavDishViewModel
-import com.shubham.dishapp.viewmodel.FavDishViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavoriteDishesFragment : Fragment() {
 
     private var mBinding: FragmentFavoriteDishesBinding? = null
 
-    private val mFavDishViewModel: FavDishViewModel by viewModels {
-        FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
-    }
+    private val mFavDishViewModel: FavDishViewModel by viewModels()
+
 
     override fun onCreateView(
             inflater: LayoutInflater,
