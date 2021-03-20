@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "fav_dishes_table")
 data class FavDish(
     @ColumnInfo val image: String,
-    @ColumnInfo(name = "image_source") val imageSource: String, // Local or Online
+    @ColumnInfo(name = "image_source") val imageSource: String,
     @ColumnInfo val title: String,
     @ColumnInfo val type: String,
     @ColumnInfo val category: String,
